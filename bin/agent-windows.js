@@ -17,6 +17,7 @@ function printHelp() {
 Create/update options:
   --title <text>          Window title
   --content <text>        Window content
+  --status <status>       in-progress, waiting-user, blocked, complete, or error
   --stdin                 Read content from standard input
   --width <pixels>        Initial width (default: 360)
   --height <pixels>       Initial height (default: 220)
@@ -220,6 +221,7 @@ async function main() {
     const input = {
       title: parsed.title,
       content,
+      status: parsed.status,
       width: numberOption(parsed.width, 'width'),
       height: numberOption(parsed.height, 'height'),
       x: numberOption(parsed.x, 'x'),
@@ -235,12 +237,13 @@ async function main() {
 
   const id = parsed['window-id'] || parsed.id;
   if (!id) throw new Error('update requires --window-id.');
-  if (parsed.title === undefined && content === undefined && parsed['always-on-top'] === undefined && parsed['not-always-on-top'] === undefined) {
-    throw new Error('update requires --title, --content, --stdin, --always-on-top, or --not-always-on-top.');
+  if (parsed.title === undefined && content === undefined && parsed.status === undefined && parsed['always-on-top'] === undefined && parsed['not-always-on-top'] === undefined) {
+    throw new Error('update requires --title, --content, --stdin, --status, --always-on-top, or --not-always-on-top.');
   }
   const input = {
     title: parsed.title,
     content,
+    status: parsed.status,
     ...(parsed['always-on-top'] !== undefined ? { always_on_top: true } : {}),
     ...(parsed['not-always-on-top'] !== undefined ? { always_on_top: false } : {}),
   };

@@ -54,6 +54,7 @@ Example response:
   "window_id": "win_7f3a91c2",
   "title": "Build Status",
   "content": "Compiling...",
+  "status": "in_progress",
   "key": null
 }
 ```
@@ -146,6 +147,7 @@ Create supports these options:
 | --- | --- |
 | `--title <text>` | Window title. |
 | `--content <text>` | Initial content. |
+| `--status <status>` | `in-progress`, `waiting-user`, `blocked`, `complete`, or `error`. Default: `in-progress`. |
 | `--stdin` | Read content from standard input. |
 | `--width <pixels>` | Initial width; default is 360. |
 | `--height <pixels>` | Initial height; default is 220. |
@@ -181,6 +183,38 @@ agent-windows create \
 ```
 
 If a window with `deployment-status` already exists, it is updated and reused instead of creating a duplicate.
+
+### Status values
+
+Statuses are intended to communicate what the agent needs from the user:
+
+| Status | Meaning | Visual treatment |
+| --- | --- | --- |
+| `in-progress` | The agent is actively working. | Indigo accent and tint. |
+| `waiting-user` | The agent needs an answer, approval, or decision. | Amber accent and tint. |
+| `blocked` | The agent cannot continue because of an external problem. | Orange accent and tint. |
+| `complete` | The task finished successfully. | Green accent and tint. |
+| `error` | The task failed. | Red accent and tint. |
+
+Set a status when creating a window:
+
+```bash
+agent-windows create \
+  --title "Deployment" \
+  --content "Uploading..." \
+  --status in-progress
+```
+
+Update it as the task changes:
+
+```bash
+agent-windows update \
+  --window-id win_7f3a91c2 \
+  --status waiting-user \
+  --content "Please approve production deployment."
+```
+
+The status changes the accent strip, status dot, and a subtle background tint. The title and content text remain neutral for readability.
 
 ## 10. Host behavior
 

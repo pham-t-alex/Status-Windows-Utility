@@ -5,6 +5,7 @@ const http = require('node:http');
 const path = require('node:path');
 
 const { APP_NAME, HOST_VERSION, HOST_PORT, getDataDirectory, getStatePath } = require('./config');
+const { normalizeStatus } = require('./status');
 
 app.setName(APP_NAME);
 app.setPath('userData', getDataDirectory());
@@ -57,6 +58,7 @@ app.setPath('userData', getDataDirectory());
       window_id: entry.id,
       title: entry.title,
       content: entry.content,
+      status: entry.status,
       key: entry.key || null,
     };
   }
@@ -76,6 +78,7 @@ app.setPath('userData', getDataDirectory());
       if (existing) {
         existing.title = validateText(input.title, 'title', existing.title);
         existing.content = validateText(input.content, 'content', existing.content);
+        existing.status = normalizeStatus(input.status, existing.status);
         existing.window.setAlwaysOnTop(input.always_on_top !== false, 'floating');
         if (process.platform === 'darwin') {
           existing.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
@@ -89,6 +92,7 @@ app.setPath('userData', getDataDirectory());
     const id = `win_${crypto.randomBytes(8).toString('hex')}`;
     const title = validateText(input.title, 'title', 'Status window');
     const content = validateText(input.content, 'content', '');
+    const status = normalizeStatus(input.status);
     const width = Number.isFinite(Number(input.width)) ? Number(input.width) : 360;
     const height = Number.isFinite(Number(input.height)) ? Number(input.height) : 220;
     const options = {
@@ -117,7 +121,7 @@ app.setPath('userData', getDataDirectory());
       window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
     }
 
-    const entry = { id, key: requestedKey, title, content, window };
+    const entry = { id, key: requestedKey, title, content, status, window };
     windows.set(id, entry);
 
     window.on('closed', () => {
@@ -143,6 +147,7 @@ app.setPath('userData', getDataDirectory());
 
     if (input.title !== undefined) entry.title = validateText(input.title, 'title');
     if (input.content !== undefined) entry.content = validateText(input.content, 'content');
+    if (input.status !== undefined) entry.status = normalizeStatus(input.status);
     if (input.always_on_top !== undefined) {
       if (typeof input.always_on_top !== 'boolean') throw new Error('always_on_top must be a boolean.');
       entry.window.setAlwaysOnTop(input.always_on_top, 'floating');

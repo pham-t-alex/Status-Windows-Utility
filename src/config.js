@@ -2,7 +2,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const APP_NAME = 'status-windows-utility';
-const HOST_VERSION = '0.2.0';
+const HOST_VERSION = '0.3.0';
 const HOST_PORT = 47821;
 const STATE_FILE = 'host.json';
 

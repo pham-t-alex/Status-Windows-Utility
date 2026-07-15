@@ -24,9 +24,15 @@
         min-height: 120px;
         padding: 14px 18px 16px;
         color: #1f2937;
-        background: #f8fafc;
-        border-top: 3px solid #6366f1;
+        background: var(--status-tint, #f8fafc);
+        border-top: 3px solid var(--status-color, #6366f1);
       }
+
+      body[data-status="in_progress"] { --status-color: #4f46e5; --status-tint: #f5f7ff; }
+      body[data-status="waiting_user"] { --status-color: #d97706; --status-tint: #fffbeb; }
+      body[data-status="blocked"] { --status-color: #ea580c; --status-tint: #fff7ed; }
+      body[data-status="complete"] { --status-color: #16a34a; --status-tint: #f0fdf4; }
+      body[data-status="error"] { --status-color: #dc2626; --status-tint: #fef2f2; }
 
       .window {
         display: flex;
@@ -48,6 +54,24 @@
         letter-spacing: -0.01em;
         overflow-wrap: anywhere;
       }
+
+      .title-row {
+        display: flex;
+        align-items: flex-start;
+        min-width: 0;
+        gap: 8px;
+      }
+
+      .status-dot {
+        flex: 0 0 8px;
+        width: 8px;
+        height: 8px;
+        margin-top: 6px;
+        border-radius: 50%;
+        background: var(--status-color, #6366f1);
+      }
+
+      .title-row h1 { flex: 1; }
 
       .divider {
         flex: 0 0 1px;
@@ -71,7 +95,12 @@
       }
 
       @media (prefers-color-scheme: dark) {
-        body { color: #e5e7eb; background: #111827; border-top-color: #818cf8; }
+        body { color: #e5e7eb; background: var(--status-tint, #111827); border-top-color: var(--status-color, #818cf8); }
+        body[data-status="in_progress"] { --status-color: #818cf8; --status-tint: #171b2d; }
+        body[data-status="waiting_user"] { --status-color: #fbbf24; --status-tint: #211d12; }
+        body[data-status="blocked"] { --status-color: #fb923c; --status-tint: #241813; }
+        body[data-status="complete"] { --status-color: #4ade80; --status-tint: #122319; }
+        body[data-status="error"] { --status-color: #f87171; --status-tint: #281618; }
         h1 { color: #f9fafb; }
         .divider { background: #4b5563; }
         .content { color: #cbd5e1; }
@@ -80,7 +109,10 @@
   </head>
   <body>
     <main class="window">
-      <h1 id="title">Status window</h1>
+      <div class="title-row">
+        <span class="status-dot" aria-hidden="true"></span>
+        <h1 id="title">Status window</h1>
+      </div>
       <div class="divider" aria-hidden="true"></div>
       <pre id="content" class="content"></pre>
     </main>
@@ -90,6 +122,7 @@
 
       function render(state) {
         if (!state) return;
+        document.body.dataset.status = state.status || 'in_progress';
         if (typeof state.title === 'string') {
           titleElement.textContent = state.title;
           document.title = state.title;

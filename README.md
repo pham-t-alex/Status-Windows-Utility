@@ -46,7 +46,7 @@ On macOS/Linux, use:
 The command returns machine-readable JSON:
 
 ```json
-{"ok":true,"window_id":"win_7f3a91c2","title":"Build","content":"Compiling...","key":null}
+{"ok":true,"window_id":"win_7f3a91c2","title":"Build","content":"Compiling...","status":"in_progress","key":null}
 ```
 
 Use the returned ID to update or close the window:
@@ -63,7 +63,7 @@ printf 'Step 1 complete\nStep 2 complete\n' |
   node bin/agent-windows.js update --window-id win_7f3a91c2 --stdin
 ```
 
-Other supported options include `--width`, `--height`, `--x`, `--y`, `--always-on-top`, `--not-always-on-top`, `--title`, and `list`.
+Other supported options include `--width`, `--height`, `--x`, `--y`, `--status`, `--always-on-top`, `--not-always-on-top`, `--title`, and `list`.
 
 An optional `--key <name> --reuse` pair makes creation retry-safe when an agent may lose the returned ID:
 
