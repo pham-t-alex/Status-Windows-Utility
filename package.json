@@ -1,0 +1,18 @@
+{
+  "name": "status-windows-utility",
+  "version": "0.1.0",
+  "description": "Small persistent windows that AI agents can create and update.",
+  "private": true,
+  "main": "src/host.js",
+  "bin": {
+    "agent-windows": "bin/agent-windows.js"
+  },
+  "scripts": {
+    "start": "electron . --host",
+    "cli": "node bin/agent-windows.js",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "electron": "^37.2.0"
+  }
+}

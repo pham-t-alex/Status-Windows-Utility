@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Status window</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        margin: 0;
+        min-width: 220px;
+        min-height: 120px;
+        padding: 14px 18px 16px;
+        color: #1f2937;
+        background: #f8fafc;
+        border-top: 3px solid #6366f1;
+      }
+
+      .window {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+        height: 100%;
+        gap: 10px;
+        overflow: hidden;
+      }
+
+      h1 {
+        min-width: 0;
+        margin: 0;
+        color: #111827;
+        font-size: 17px;
+        font-weight: 650;
+        line-height: 1.3;
+        letter-spacing: -0.01em;
+        overflow-wrap: anywhere;
+      }
+
+      .divider {
+        flex: 0 0 1px;
+        width: 100%;
+        background: #d1d5db;
+      }
+
+      .content {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        margin: 0;
+        overflow: hidden;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font-family: inherit;
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: #475569;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body { color: #e5e7eb; background: #111827; border-top-color: #818cf8; }
+        h1 { color: #f9fafb; }
+        .divider { background: #4b5563; }
+        .content { color: #cbd5e1; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="window">
+      <h1 id="title">Status window</h1>
+      <div class="divider" aria-hidden="true"></div>
+      <pre id="content" class="content"></pre>
+    </main>
+    <script>
+      const titleElement = document.getElementById('title');
+      const contentElement = document.getElementById('content');
+
+      function render(state) {
+        if (!state) return;
+        if (typeof state.title === 'string') {
+          titleElement.textContent = state.title;
+          document.title = state.title;
+        }
+        if (typeof state.content === 'string') {
+          contentElement.textContent = state.content;
+        }
+      }
+
+      window.statusWindow.onUpdate(render);
+    </script>
+  </body>
+</html>
