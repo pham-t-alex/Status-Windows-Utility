@@ -10,9 +10,10 @@
   "scripts": {
     "start": "electron . --host",
     "cli": "node bin/agent-windows.js",
+    "install-cli": "npm install -g .",
     "test": "node --test"
   },
-  "devDependencies": {
-    "electron": "^37.2.0"
+  "dependencies": {
+    "electron": "^37.10.3"
   }
 }

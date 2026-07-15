@@ -11,7 +11,6 @@ function printHelp() {
   process.stdout.write(`Usage:
   agent-windows create [options]
   agent-windows update --window-id <id> [options]
-  agent-windows close --window-id <id>
   agent-windows list
 
 Create/update options:
@@ -31,7 +30,6 @@ Create/update options:
 Examples:
   agent-windows create --title "Build" --content "Compiling..."
   echo "Build succeeded" | agent-windows update --window-id win_... --stdin
-  agent-windows close --window-id win_...
 `);
 }
 
@@ -194,21 +192,13 @@ async function main() {
     return;
   }
 
-  if (!['create', 'update', 'close', 'list'].includes(command)) {
+  if (!['create', 'update', 'list'].includes(command)) {
     throw new Error(`Unknown command: ${command}.`);
   }
 
   const state = await ensureHost();
   if (command === 'list') {
     const result = await request('GET', '/windows', undefined, state);
-    process.stdout.write(`${JSON.stringify(result)}\n`);
-    return;
-  }
-
-  if (command === 'close') {
-    const id = parsed['window-id'] || parsed.id;
-    if (!id) throw new Error('close requires --window-id.');
-    const result = await request('DELETE', `/windows/${encodeURIComponent(id)}`, undefined, state);
     process.stdout.write(`${JSON.stringify(result)}\n`);
     return;
   }

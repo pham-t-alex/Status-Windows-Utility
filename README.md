@@ -9,13 +9,15 @@ The project has two parts:
 - A persistent Electron host that owns the windows.
 - The `agent-windows` CLI, which sends commands to that host over localhost.
 
-The same protocol works on macOS, Windows, and Linux. The host generates a unique `window_id`; agents use that ID for later updates and closing.
+The same protocol works on macOS, Windows, and Linux. The host generates a unique `window_id`; agents use that ID for all later updates.
 
 ## Setup
 
 ```bash
-npm install
+npm install -g .
 ```
+
+This installs the `agent-windows` command so it can be run from any working directory. For the agent-facing command contract, see [AGENT_CONTEXT.md](AGENT_CONTEXT.md).
 
 ## Commands
 
@@ -28,7 +30,7 @@ npm start
 The CLI starts the host automatically when needed:
 
 ```bash
-node bin/agent-windows.js create --title "Build" --content "Compiling..."
+agent-windows create --title "Build" --content "Compiling..."
 ```
 
 On Windows PowerShell, the wrapper is:
@@ -49,18 +51,17 @@ The command returns machine-readable JSON:
 {"ok":true,"window_id":"win_7f3a91c2","title":"Build","content":"Compiling...","status":"in_progress","key":null}
 ```
 
-Use the returned ID to update or close the window:
+Use the returned ID to update the window:
 
 ```bash
-node bin/agent-windows.js update --window-id win_7f3a91c2 --content "Build succeeded"
-node bin/agent-windows.js close --window-id win_7f3a91c2
+agent-windows update --window-id win_7f3a91c2 --content "Build succeeded"
 ```
 
 For multiline content, use stdin:
 
 ```bash
 printf 'Step 1 complete\nStep 2 complete\n' |
-  node bin/agent-windows.js update --window-id win_7f3a91c2 --stdin
+  agent-windows update --window-id win_7f3a91c2 --stdin
 ```
 
 Other supported options include `--width`, `--height`, `--x`, `--y`, `--status`, `--always-on-top`, `--not-always-on-top`, `--title`, and `list`.
@@ -68,7 +69,7 @@ Other supported options include `--width`, `--height`, `--x`, `--y`, `--status`,
 An optional `--key <name> --reuse` pair makes creation retry-safe when an agent may lose the returned ID:
 
 ```bash
-node bin/agent-windows.js create --key build-status --reuse --title "Build" --content "Compiling..."
+agent-windows create --key build-status --reuse --title "Build" --content "Compiling..."
 ```
 
 ## Development

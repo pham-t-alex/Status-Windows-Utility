@@ -157,14 +157,6 @@ app.setPath('userData', getDataDirectory());
     return entry;
   }
 
-  function closeStatusWindow(id) {
-    const entry = windows.get(id);
-    if (!entry || entry.window.isDestroyed()) {
-      throw new Error(`Window not found: ${id}`);
-    }
-    entry.window.close();
-  }
-
   async function handleRequest(request, response) {
     if (request.headers.authorization !== `Bearer ${authToken}`) {
       sendError(response, 401, 'Unauthorized.');
@@ -184,7 +176,7 @@ app.setPath('userData', getDataDirectory());
         return;
       }
 
-      const input = request.method === 'DELETE' ? {} : await readJson(request);
+      const input = await readJson(request);
       if (request.method === 'POST' && url.pathname === '/windows') {
         const entry = createStatusWindow(input);
         sendJson(response, 200, { ok: true, ...getWindowState(entry) });
@@ -196,11 +188,6 @@ app.setPath('userData', getDataDirectory());
         if (request.method === 'PATCH') {
           const entry = updateStatusWindow(id, input);
           sendJson(response, 200, { ok: true, ...getWindowState(entry) });
-          return;
-        }
-        if (request.method === 'DELETE') {
-          closeStatusWindow(id);
-          sendJson(response, 200, { ok: true, window_id: id });
           return;
         }
       }
